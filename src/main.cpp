@@ -9,6 +9,7 @@
 #include <logs.hpp>
 #include <pump.hpp>
 #include <timer.hpp>
+#include <utils.hpp>
 
 LiquidCrystal_I2C display = LiquidCrystal_I2C(0x27, 20, 4);
 Ultrasonic sensor = Ultrasonic(TRIGGER_PIN, ECHO_PIN);
@@ -16,8 +17,8 @@ Ultrasonic sensor = Ultrasonic(TRIGGER_PIN, ECHO_PIN);
 bool manual = false;
 bool pump = false;
 
-uint16_t distance = 0;
-uint16_t volume = 0;
+uint16_t distance = 71;
+uint16_t volume;
 
 void setup()
 {
@@ -35,42 +36,40 @@ void loop()
     if(btn_pump_pressed())
     {
       pump_on();
-      // log_info("Bomba ligada");
+      log_info("Bomba ligada");
+      while(btn_pump_pressed());
 
-    } else {
+      log_info("Bomba desligada");
       pump_off();
-      // log_info("Bomba desligada");
     }
 
   } else {
     // CONTROLE AUTOMÁTICO
-
-    // distance = sensor.read();
+    volume = calc_volume(distance);
+    
     if(update_screen())
     {
-      if(volume < 100)
-      {
-        volume += 5;
-      }
-
       lcd_print_volume(&display, volume);
       log_info("volume atual: " + String(volume) + "L");
 
+      // SIMULANDO VAZÃO DA BOMBA
+      if(volume > 50) distance++;
+
+      if(volume <= 50)
+      {
+        lcd_print_pump(&display, true);
+        pump_on();
+        log_info("Bomba ligada"); 
+      }
+      
+      if(volume >= 950)
+      {
+        lcd_print_pump(&display, false);
+        log_info("Bomba desligada");
+        pump_off();
+      }
     }
     
-    if(volume <= 10)
-    {
-      lcd_print_pump(&display, true);
-      pump_on();
-      // log_info("Bomba ligada"); TODO: ENCONTRAR FORMA DE LOGGAR OS DADOS DA BOMBA
-    }
-    
-    if(volume >= 90)
-    {
-      lcd_print_pump(&display, false);
-      // log_info("Bomba desligada"); TODO: ENCONTRAR FORMA DE LOGGAR OS DADOS DA BOMBA
-      pump_off();
-    }
     
 
   }
