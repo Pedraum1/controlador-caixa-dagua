@@ -13,10 +13,9 @@ void gpio_config()
 
 bool btn_pump_clicked()
 {
-    if(!digitalRead(PUMP_BUTTON))
+    if(btn_pump_pressed())
     {
-        while(!digitalRead(PUMP_BUTTON));
-        return true;
+        if(!btn_pump_pressed()) return true;
     }
 
     return false;
@@ -29,11 +28,15 @@ bool btn_pump_pressed()
 
 bool btn_manual_clicked()
 {
-    if(!digitalRead(MANUAL_BUTTON))
+    if(btn_manual_pressed())
     {
-        while(!digitalRead(MANUAL_BUTTON));
-        return true;
+        if(!btn_manual_pressed()) return true;
     }
 
     return false;
+}
+
+bool btn_manual_pressed()
+{
+    return !digitalRead(MANUAL_BUTTON);
 }

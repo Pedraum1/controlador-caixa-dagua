@@ -5,6 +5,10 @@
         #define BAUD_RATE 9600
     #endif
 
+    #ifndef LOGS_EN
+        #define LOGS_EN 1
+    #endif
+
 #include <Arduino.h>
 
 extern uint16_t logs_counter;
