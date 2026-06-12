@@ -6,12 +6,12 @@
 #define PUMP_BUTTON     A0
 #define MANUAL_BUTTON   A1
 
-#define TRIGGER_PIN     6
-#define ECHO_PIN        5
+#define TRIGGER_PIN     3
+#define ECHO_PIN        2
 
-#define PUMP_LED_PIN        10
+#define PUMP_LED_PIN        12
 #define AUTOMATIC_LED_PIN   11
-#define MANUAL_LED_PIN      12
+#define MANUAL_LED_PIN      10
 #define RELAY_PIN           2
 
 void gpio_config();

@@ -41,37 +41,41 @@ void loop()
 
       log_info("Bomba desligada");
       pump_off();
+      
+      digitalWrite(MANUAL_LED_PIN, HIGH);
+      digitalWrite(AUTOMATIC_LED_PIN, LOW);
     }
 
   } else {
     // CONTROLE AUTOMÁTICO
-    volume = calc_volume(distance);
-    
-    if(update_screen())
+
+    digitalWrite(MANUAL_LED_PIN, LOW);
+    digitalWrite(AUTOMATIC_LED_PIN, HIGH);
+
+    // INSERIR LEITURA DO SENSOR ULTRASSONICO FILTRO
+
+  }
+
+  if(update_screen())
+  {
+    volume = calc_volume(sensor.read());
+
+    lcd_print_volume(&display, volume);
+    log_info("volume atual: " + String(volume) + "L");
+
+    if(volume <= 50)
     {
-      lcd_print_volume(&display, volume);
-      log_info("volume atual: " + String(volume) + "L");
-
-      // SIMULANDO VAZÃO DA BOMBA
-      if(volume > 50) distance++;
-
-      if(volume <= 50)
-      {
-        lcd_print_pump(&display, true);
-        pump_on();
-        log_info("Bomba ligada"); 
-      }
-      
-      if(volume >= 950)
-      {
-        lcd_print_pump(&display, false);
-        log_info("Bomba desligada");
-        pump_off();
-      }
+      lcd_print_pump(&display, true);
+      pump_on();
+      log_info("Bomba ligada"); 
     }
     
-    
-
+    if(volume >= 950)
+    {
+      lcd_print_pump(&display, false);
+      log_info("Bomba desligada");
+      pump_off();
+    }
   }
 
   if(btn_manual_clicked())
